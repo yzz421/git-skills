@@ -1,4 +1,4 @@
-##### 初次运行Git前配置
+### 初次运行Git前配置
 
 git自带一个 `git conifg` 的工具来帮助设置控制Git外观和行为的配置变量。这些变量存储在三个不同的位置：
 
@@ -10,9 +10,7 @@ git自带一个 `git conifg` 的工具来帮助设置控制Git外观和行为的
 
 `$ git config --list --show-origin`
 
-
-
-##### 用户信息
+### 用户信息
 
 安装完 Git 后，要做的第一件事就是设置你的用户名和邮箱地址。每一次 Git 提交都会使用这些信息，它们会写入到你的每一次提交中，不可更改：
 
@@ -23,7 +21,7 @@ $ git config --global user.email yzz.ice@example.com
 
 
 
-##### 检查配置信息
+### 检查配置信息
 
 ```
 $ git config --list
@@ -45,7 +43,7 @@ yzz421
 
 
 
-##### 获取帮助
+### 获取帮助
 
 ```
 $ git help <verb>
@@ -85,7 +83,7 @@ usage: git add [<options>] [--] <pathspec>...
 
 
 
-##### 获取 Git 仓库
+### 获取 Git 仓库
 
 通常有两种获取 Git 项目的方式：
 
@@ -126,7 +124,7 @@ Git 支持多种数据传输协议。上面所使用的是 `https://`协议，�
 
 
 
-##### 检查当前文件状态
+### 检查当前文件状态
 
 ```
 $ git status
@@ -150,7 +148,7 @@ nothing added to commit but untracked files present (use "git add" to track)
 
 
 
-##### 跟踪新文件
+### 跟踪新文件
 
 ```
 $ git add README
@@ -170,7 +168,7 @@ Changes to be committed:
 
 
 
-##### 状态简览
+### 状态简览
 
 ```
 $ git status -s
@@ -189,7 +187,7 @@ M  lib/simplegit.rb
 
 
 
-##### 忽略文件
+### 忽略文件
 
 `.gitignore`
 
@@ -235,7 +233,7 @@ doc/**/*.pdf
 
 
 
-##### 查看已暂存和未暂存的修改
+### 查看已暂存和未暂存的修改
 
 `git diff` 命令
 
@@ -264,7 +262,7 @@ index 8ebb991..643e24f 100644
 
 
 
-##### 提交更新
+### 提交更新
 
 可以在 `commit` 命令后添加 `-m` 选项，将提交信息与命令放在同一行
 
@@ -272,7 +270,7 @@ index 8ebb991..643e24f 100644
 
 
 
-##### 移除文件
+### 移除文件
 
 删除工作目录中的指定文件
 
@@ -302,7 +300,7 @@ $ git rm \*~
 
 
 
-##### 移动文件
+### 移动文件
 
 ```console
 $ git mv file_from file_to
