@@ -278,7 +278,7 @@ index 8ebb991..643e24f 100644
 
 如果要删除之前修改过或已经放到暂存区的文件，则必须使用强制删除选项 `-f`（译注：即 force 的首字母）。 这是一种安全特性，用于防止误删尚未添加到快照的数据，这样的数据不能被 Git 恢复。
 
-从暂存区域移除并保留在当前工作目录中
+如果只是从暂存区域移除并保留在当前工作目录中（即保留在本地）
 
 ```console
 $ git rm --cached README
@@ -313,4 +313,142 @@ $ mv README.md README
 $ git rm README.md
 $ git add README
 ```
+
+### 查看提交历史
+
+`git log`
+
+不带任何参数的情况下 `git log`会按时间先后顺序列出所有的提交，最近的更新排在上面。这个命令回列出每个提交的 SHA-1 校验和、作者的名字和电子邮件地址、提交时间以及提交说明
+
+`git log -p` 或者 `--patch`， 它会现实每次提交所引入的差异
+
+你也可以限制显示的日志条目数量，例如使用 `-2` 选项来只显示最近的两次提交
+
+如果想看到每次提交的简略统计信息，可以使用 `--stat` 选项
+
+还有一个非常有用的选项是 `--pretty`。这个选项可以使用不同于默认格式的方式展示提交历史。比如 `oneline`会讲每个提交放在一样，另外还有`short`，`full`和`fuller`选项，他们展示的格式基本一致，但是详尽程度不一
+
+`format`可以定制记录的显示格式
+
+| 选项 | 说明                                        |
+| :--- | ------------------------------------------- |
+| %H   | 提交的完整哈希值                            |
+| %h   | 提交的简写哈希值                            |
+| %T   | 树的完整哈希值                              |
+| %t   | 树的简写哈希值                              |
+| %P   | 父提交的完整哈希值                          |
+| %p   | 父提交的简写哈希值                          |
+| %an  | 作者的名字                                  |
+| %ae  | 作者的电子邮件地址                          |
+| %ad  | 作者修订日期（可以用 --date=选项 来定制格式 |
+| %ar  | 作者修订日期，按多久以前的方式显示          |
+| %cn  | 提交者的名字                                |
+| %ce  | 提交者的电子邮件地址                        |
+| %cd  | 提交日期                                    |
+| %cr  | 提交日期（距今多长时间）                    |
+| %s   | 提交说明                                    |
+
+`作者 `和 `提交者` 之间的区别，作者指的是实际作出修改的人，提交者是将此工作成果提交到仓库的人。 所以，当你为某个项目发布补丁，然后某个核心成员将你的补丁并入项目时，你就是作者，而那个核心成员就是提交者。
+
+git log没啥意思之后在补充这段
+
+
+
+### 撤销操作
+
+有时候我们提交完了才发现漏掉了几个文件没有添加，或者是提交信息写错了。此时，可以运行带有 `--amend` 选项的命令来重新提交
+
+` $ git commit --amend`
+
+这个命令会将暂存区中的文件提交。如果自上次提交你还未做任何修改，那么快照会保持不变，而你所修改的只是提交信息
+
+例如，你提交后发现忘记了暂存某些需要的修改，可以像下面这样操作
+
+```
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+```
+
+最终你只会有一个提交 —— 第二次提交将代替第一次提交的结果
+
+> Note 
+>
+> 当你修补最后提交时，并不是通过用改进后的提交 `原位替换` 掉旧有提交的方式来修复的，理解这一点非常重要。从效果上来说，就像是旧有的提交从未存在过一样，它并不会出现在仓库的历史中。
+>
+> 修补提交最明显的角质是可以稍微改进你最后的提交，而不是让“啊，忘了添加一个文件”或者“小修补，修正笔误”这种提交信息弄乱你的仓库历史
+
+
+
+#### 取消暂存的文件
+
+例如，你已经修改了两个文件并且想要将他们作为两次独立的修改提交，但是却意外的输入了`git add *`暂存了他们两个。如何只取消暂存两个钟的一个呢？`git status` 命令提示了你
+
+```
+$ git add *
+$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    renamed:    README.md -> README
+    modified:   CONTRIBUTING.md
+```
+
+在“Changes to be committed” 文字的正下方，使用`git reset HEAD <file> ... ` 来取消暂存，所以我们可以这样来取消暂存 `CONTRIBUTING.md` 文件
+
+```
+$ git reset HEAD CONTRIBUTING.md
+Unstaged changes after reset:
+M	CONTRIBUTING.md
+$ git status
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    renamed:    README.md -> README
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+    modified:   CONTRIBUTING.md
+```
+
+这个命令有点奇怪，但是起作用了。CONTRIBUTING.md文件已经是修改未暂存的状态了。
+
+> Note
+>
+> git reset 确实是个危险的命令，如果加上了 --hard选项更是如此。然而在上述场景中，工作目录中的文件尚未修改，因此相对安全一些
+
+### 撤销对文件的修改
+
+如果并不想保留对 `CONTRIBUTING.md` 文件的修改怎么办？在最后一个例子中，为暂存的区域是这样的（`git status`):
+
+```
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+    modified:   CONTRIBUTING.md
+```
+
+它非常清楚地告诉了你如何撤销之前所做的修改。
+
+```
+$ git checkout -- CONTRIBUTING.md
+$ git status
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+    renamed:    README.md -> README
+```
+
+可以看到那些修改已经被撤销了。
+
+>
+>
+>important
+>
+>请务必记得 `git checkout -- <file>` 是一个危险的命令。你对那个文件在本地的任何修改都会消失 —— Git 会用最近提交的版本覆盖掉它。除非你确实清楚不想要对那个文件的本地修改了。
 
